@@ -17,6 +17,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-r', '--reference', dest='r', help="full path of the ref genome index files [required]", required=True)
 parser.add_argument('-i', '--input', dest='infolder', help="full path of the folder with input *.trim.fastq.gz files [required]", required=True)
 parser.add_argument('-o', '--output', dest='output', help="full path of output folder [required]", required=True)
+parser.add_argument('-p', '--script', dest='script', help="full path of scripts [required]", required=True)
 parser.add_argument('-N', '--threads', dest='threads', help="number of threads [default 4]", default=4, type=int)
 parser.add_argument('--mem', dest='mem', help="memory [default 16G]", default="16G")
 parser.add_argument('--time', dest='time', help="maximum run time as hours:minutes:seconds [default 4:0:0]", default="24:0:0")
@@ -28,9 +29,9 @@ parser.add_argument('--print', type=str, dest='prt', default='false', help='If c
 
 
 args = parser.parse_args()
-script=os.path.realpath(__file__)
+
 #scriptpath=script.rsplit('/', 1)[0]
-scriptpath="/home/ubelix/ips/rchoudhury/scripts"
+scriptpath=args.script
 fastq=[f for f in os.listdir(args.infolder) if f.endswith('.trim.fastq.gz')]
 sfq=[i for i in fastq if "_L1_" in i] 
 outname=set([i.split("_L1_", 1)[0] for i in sfq])
