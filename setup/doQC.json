@@ -3,8 +3,6 @@
                 "basepath": "/home/ubelix/ips/rchoudhury/Data/biscut_ind/"
         },
         "project": {
-                "basename": "/home/ubelix/ips/rchoudhury/Data/biscut_ind/",
-                "id": "Blaev_individuals",
                 "fastqs": "/home/ubelix/ips/rchoudhury/Data/biscut_ind/files",
 		"samples": "/home/ubelix/ips/rchoudhury/Data/biscut_ind/samples.txt"
         }

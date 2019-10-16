@@ -39,7 +39,6 @@ module add vital-it UHTS/Analysis/trimmomatic/0.36
 source activate py3
 #input
 basepath=$(eval jq .project.basename $1 | sed 's/^"\(.*\)"$/\1/')
-id=$(eval jq .project.id $1 | sed 's/^"\(.*\)"$/\1/' )
 fastqs=$(eval jq .project.fastqs $1 | sed 's/^"\(.*\)"$/\1/')
 samples=$(eval jq .project.samples $1 | sed 's/^"\(.*\)"$/\1/')
 #output
