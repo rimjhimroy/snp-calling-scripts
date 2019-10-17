@@ -19,6 +19,14 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args":["-r", "/home/ubelix/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta", "-i", "/home/ubelix/ips/rchoudhury/Data/biscut_ind/qc_trim/A2Sch_L1_R1_001.trim.fastq.gz", "-m", "/home/ubelix/ips/rchoudhury/Data/biscut_ind/qc_trim/A2Sch_L1_R2_001.trim.fastq.gz", "--sample", "A2Sch", "--library", "A2Sch", "-o", "/home/ubelix/ips/rchoudhury/Data/biscut_ind/mapout/A2Sch_L1", "-n", "A2Sch_L1", "--print", "True"]
+        },
+        {
+            "name": "Python: 03_merge_libraries_into_sample",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/mapout","-s","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/Library_to_samples.txt"]
         }
     ]
 }

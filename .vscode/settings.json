@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "/usr/bin/python3",
+    "python.pythonPath": "/home/ubelix/ips/rchoudhury/miniconda3/bin/python",
     "python.pydev.java.home": "/home/ubelix/ips/rchoudhury/jre1.8.0_231"
 }

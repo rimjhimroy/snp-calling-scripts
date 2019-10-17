@@ -1,0 +1,8 @@
+{
+    "pipeline":{
+            "basepath": "/home/ubelix/ips/rchoudhury/Data/biscut_ind/"
+    },
+    "project": {
+            "fastqs": "/home/ubelix/ips/rchoudhury/Data/biscut_ind/files"
+    }
+}
