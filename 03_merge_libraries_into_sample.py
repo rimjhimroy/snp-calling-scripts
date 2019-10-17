@@ -45,5 +45,5 @@ if __name__ == '__main__':
 
         cmd='sbatch -p all --wrap "samtools merge %s/mergedbam/%s %s"' %(basedir,outbam,tomerge)
         print(cmd)
-        #p = subprocess.Popen(cmd, shell=True)
-        #sts = os.waitpid(p.pid, 0)[1]
+        p = subprocess.Popen(cmd, shell=True)
+        sts = os.waitpid(p.pid, 0)[1]
