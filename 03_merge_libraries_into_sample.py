@@ -39,7 +39,7 @@ if __name__ == '__main__':
     basedir=args.infolder.rsplit('/', 1)[0]
     mk_dir(basedir+"/mergedbam")
     for i in samples:
-        lanelist=[basedir+"/mapout/"+lane+"_sort_mkrdup.bam" for lane, slist in lanedict.items() if slist==i]
+        lanelist=[basedir+"/mapout/"+lane+"_sort_mrkdup.bam" for lane, slist in lanedict.items() if slist==i]
         tomerge=' '.join(map(str, lanelist))
         outbam=i+".bam"
 
