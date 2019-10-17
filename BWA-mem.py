@@ -30,7 +30,17 @@
 
 
 
-import argparse, time, os, gzip, re, subprocess
+import argparse, time, os, gzip, re, subprocess, errno
+
+def mk_dir(path):
+    try:
+        os.mkdir(path)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            print ("Creation of the directory %s failed" % path)
+    else:
+        print ("Successfully created the directory %s " % path)
+
 
 parser = argparse.ArgumentParser()
 
@@ -123,8 +133,10 @@ script.write('/bin/echo Job start time: `date`'+'\n')
 
 script.write('export PATH=/software/bin:$PATH'+'\n')
 script.write('module use /software/module/'+'\n')
+script.write('module add vital-it'+'\n')
 script.write('module add UHTS/Aligner/bwa/%s' %args.version +'\n')
 script.write('module add UHTS/Analysis/samtools/%s' %args.samtools + '\n')
+script.write('module add UHTS/Analysis/picard-tools/2.18.11'+'\n')
 
 # change to local scratch (unless -s is provided)
 if args.s:
@@ -177,6 +189,17 @@ if args.s:
         script.write('mv $work $home' + '\n')
         script.write('rm -rf $work' + '\n')
         script.write('cd $home' + '\n')
+
+#Sort and mark duplicates with picard tools
+outbam=args.output.rsplit('.', 1)[0]+"_sort.bam"
+mrkdup=args.output.rsplit('.', 1)[0]+"_sort_mrkdup.bam"
+tmpdir='%s/tmp/%s/' %(basefolder,args.n)
+mk_dir(basefolder+"/tmp")
+mk_dir(tmpdir)
+#mk_dir(basefolder+"/mrkduplog")
+metrics=basefolder+"/mrkduplog/"+args.n+"_metrics.txt"
+script.write("picard-tools SortSam INPUT=%s OUTPUT=%s SORT_ORDER=coordinate TMP_DIR=%s" %(args.output+".sam", outbam,tmpdir)+'\n')
+script.write("picard-tools MarkDuplicates INPUT=%s OUTPUT=%s METRICS_FILE=%s TMP_DIR=%s" %(outbam, mrkdup,metrics,tmpdir)+'\n')
 
 script.write('/bin/echo Job end time: `date`'+'\n')
 script.close()

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#SBATCH --job-name=QC # Job name
+#SBATCH --job-name=TRIM # Job name
 #SBATCH --time=2-0
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=25G # Memory pool for all cores (see also --mem-per-cpu)
 #SBATCH --partition=all # Partition to submit to
-#SBATCH --output=/home/ubelix/ips/rchoudhury/Data/biscut_ind/trimlog/QC-\%A_\%a.out # File to which STDOUT will be written
-#SBATCH --error=/home/ubelix/ips/rchoudhury/Data/biscut_ind/trimlog/QC-\%A_\%a.err # File to which STDERR will be written 
+#SBATCH --output=/home/ubelix/ips/rchoudhury/Data/biscut_ind/trimlog/TRIM-\%A_\%a.out # File to which STDOUT will be written
+#SBATCH --error=/home/ubelix/ips/rchoudhury/Data/biscut_ind/trimlog/TRIM-\%A_\%a.err # File to which STDERR will be written 
 #SBATCH --mail-type=FAIL # Type of email notification- BEGIN,END,FAIL,ALL
 #SBATCH --mail-user=rimjhim.choudhury@ips.unibe.ch # Email to which notifications will be sent
 #SBATCH --array=1-31                 # Array range
@@ -34,8 +34,6 @@ if [ -z ${SLURM_NTASKS} ]; then THREADS=$( nproc ); else THREADS=${SLURM_NTASKS}
 if [ -z $1 ]; then echo "json path is unset"; exit 1; else echo "json setup file: '$1'"; fi
 
 module add vital-it UHTS/Analysis/trimmomatic/0.36
-#source /data/users/lfalquet/BC7107_18/scripts/module.sh
-#source ~/.bash_profile
 source activate py3
 #input
 basepath=$(eval jq .project.basename $1 | sed 's/^"\(.*\)"$/\1/')
@@ -49,7 +47,7 @@ cd $qc_out
 echo sample is $samples
 
 declare -a sam=(`cat $samples`)
-#sam=(`cat $sample`)
+
 
 
 # Calculate the starting and ending values for this task based
