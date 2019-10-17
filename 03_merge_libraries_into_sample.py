@@ -43,7 +43,7 @@ if __name__ == '__main__':
         tomerge=' '.join(map(str, lanelist))
         outbam=i+".bam"
 
-        cmd='sbatch -p all --wrap "samtools merge %s/mergedbam/%s %s"' %(basedir,outbam,tomerge)
+        cmd='sbatch -p all --time=5:00:00 --wrap "samtools merge %s/mergedbam/%s %s"' %(basedir,outbam,tomerge)
         print(cmd)
         p = subprocess.Popen(cmd, shell=True)
         sts = os.waitpid(p.pid, 0)[1]
