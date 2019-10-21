@@ -15,7 +15,9 @@ ln -s raw/* files/.
 cd files
 while read from to; do    echo "mv ${from} $to"; done < ../names.txt
 ```
+
 2. FastQC and multiqc
+
 ```
 sbatch doQC.sh json_setup_files/run_qc.json
 ```
@@ -23,11 +25,16 @@ sbatch doQC.sh json_setup_files/run_qc.json
 ## Steps
 
 ## 01 Read Trimming
+
 ```
 sbatch 01_read_trimming.sh setup/01_read_trimming.sh
 ```
 
-## 03 Mapping using BWA-mem
+## 02 Mapping using BWA-mem
+
 ```
 02_run_mapping.py -r [PATH/TO/REFERENCE] -i [PATH/TO/TRIMMED/FASTQ/FILES] -o [PATH/TO/OUTPUT/FOLDERS] -p [PATH/TO/THE/SCRIPTS/FOLDER]
 ```
+
+## 03 BQSR and variant calling
+if you have reference with 

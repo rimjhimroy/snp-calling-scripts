@@ -16,7 +16,7 @@ def mk_dir(path):
 
 class sampmap:
     def __init__(self,entry):
-        popmap=pd.read_csv(entry, delimiter='\s+',lineterminator='\n',chunksize =50)
+        popmap=pd.read_csv(entry, delimiter='\s+',lineterminator='\n',chunksize =50,header=None)
         map_df = pd.concat(popmap, ignore_index=True)
         map_df.columns = ['lane', 'sample']
         self.lane = list(map_df['lane'])
@@ -29,7 +29,7 @@ class sampmap:
 if __name__ == '__main__':
     # create variables that can be entered as arguments in command line
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='infolder', help="full path of the folder with input per library *_sort_mrkdup.fastq.gz files [required]", required=True)
+    parser.add_argument('-i', '--input', dest='infolder', help="full path of the folder with input per library *_sort_mrkdup.bam files [required]", required=True)
     parser.add_argument('-s', '--map', dest='map', help="full path to the file mapping library name to sample name [required]", required=True)
     args = parser.parse_args()
 

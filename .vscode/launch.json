@@ -27,6 +27,14 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/mapout","-s","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/Library_to_samples.txt"]
+        },
+        {
+            "name": "Python: 04_run_variant_calling.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/mergedbam","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta","-s","/gpfs/homefs/ips/rchoudhury/snp_calling_scripts", "-p","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/samples2ploidy.txt"]
         }
     ]
 }
