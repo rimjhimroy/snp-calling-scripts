@@ -35,6 +35,14 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/mergedbam","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta","-s","/gpfs/homefs/ips/rchoudhury/snp_calling_scripts", "-p","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/samples2ploidy.txt"]
+        },
+        {
+            "name": "Python: 05_joint-genotyping.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/join-genotyping","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta","-s","/gpfs/homefs/ips/rchoudhury/snp_calling_scripts","-sc","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/scaff_name.txt" ,"-g","biscut_ind"]
         }
     ]
 }
