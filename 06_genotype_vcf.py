@@ -34,10 +34,11 @@ if __name__ == '__main__':
     bwt=args.ref+'.bwt'
     pac=args.ref+'.pac'
     sa=args.ref+'.sa'
-    indexFiles=[amb, ann, bwt, pac, sa]
+    fai=args.ref+'.fai'
+    indexFiles=[amb, ann, bwt, pac, sa,fai]
     for i in indexFiles:
         if not os.path.isfile(i):
-            print("Index files for reference genome are incomplete. Please check")
+            print("Index files for reference genome are incomplete. Please check %s file" % i)
             break
         else:
             continue
@@ -54,9 +55,9 @@ if __name__ == '__main__':
         scaffs = fi.read().splitlines()
     for i in scaffs:
         scaff_name=i
-        scaff_name=scaff_name.replace("|", "_")
-        command="%s GenomicsDBImport %s --reader-threads 8 --genomicsdb-workspace-path %s_%sdb -L %s" % (GATK4,tomerge,args.group,scaff_name,i)
+        scaff_name=scaff_name.replace("|", "\|")
+        command="%s GenotypeGVCFs -R %s -V gendb://%s_%s_db -O %s_%s.vcf.gz" % (GATK4,args.ref,args.group,i,args.group,i)
         cmd='sbatch -c 8 -p all --mem=48G --wrap "%s"' % command
-        p = subprocess.Popen(cmd, shell=True)
-        sts = os.waitpid(p.pid, 0)[1]
+        #p = subprocess.Popen(cmd, shell=True)
+        #sts = os.waitpid(p.pid, 0)[1]
         print(cmd)
