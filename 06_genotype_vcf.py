@@ -58,6 +58,6 @@ if __name__ == '__main__':
         scaff_name=scaff_name.replace("|", "\|")
         command="%s GenotypeGVCFs -R %s -V gendb://%s_%s_db -O %s_%s.vcf.gz" % (GATK4,args.ref,args.group,i,args.group,i)
         cmd='sbatch -c 8 -p all --mem=48G --wrap "%s"' % command
-        #p = subprocess.Popen(cmd, shell=True)
-        #sts = os.waitpid(p.pid, 0)[1]
+        p = subprocess.Popen(cmd, shell=True)
+        sts = os.waitpid(p.pid, 0)[1]
         print(cmd)

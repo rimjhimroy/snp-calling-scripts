@@ -43,6 +43,22 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/join-genotyping","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta","-s","/gpfs/homefs/ips/rchoudhury/snp_calling_scripts","-sc","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/scaff_name.txt" ,"-g","biscut_ind"]
+        },
+        {
+            "name": "Python: 07_merge_vcf.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/join-genotyping","-s","/gpfs/homefs/ips/rchoudhury/snp_calling_scripts","-sc","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/scaff_name.txt" ,"-g","biscut_ind"]
+        },
+        {
+            "name": "Python: 08_select_vcf.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/final_vcf/biscut_ind_allchr.vcf.gz","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta"]
         }
     ]
 }
