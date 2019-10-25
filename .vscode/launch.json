@@ -42,7 +42,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/join-genotyping","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta","-s","/gpfs/homefs/ips/rchoudhury/snp_calling_scripts","-sc","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/scaff_name.txt" ,"-g","biscut_ind"]
+            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/BQSR","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta","-s","/gpfs/homefs/ips/rchoudhury/snp_calling_scripts","-sc","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/scaff_name.txt" ,"-g","biscut_ind"]
         },
         {
             "name": "Python: 07_merge_vcf.py",

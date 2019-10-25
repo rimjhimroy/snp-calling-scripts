@@ -30,12 +30,12 @@ if __name__ == '__main__':
     outname1=baseout+"_raw_SNPS.vcf.gz"
     outname2=baseout+"_filtered_SNPS.vcf.gz"
     cmd1 = '%s SelectVariants -R %s -V %s -select-type SNP -O %s' % (GATK4,args.r,args.input,outname1)
-    cmd2 = "%s VariantFiltration -R %s -V %s -O %s --filter-expression 'QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || SOR > 3.0' --filter-name 'LMS_SNP_filter1'" % (GATK4,args.r,outname1,outname2)
+    cmd2 = "%s VariantFiltration -R %s -V %s -O %s -filter 'QD < 2.0' --filter-name 'QD2' -filter 'QUAL < 30.0' --filter-name 'QUAL30' -filter 'SOR > 3.0' --filter-name 'SOR3' -filter 'FS > 60.0' --filter-name 'FS60' -filter 'MQ < 40.0' --filter-name 'MQ40' -filter 'MQRankSum < -12.5' --filter-name 'MQRankSum-12.5' -filter 'ReadPosRankSum < -8.0' --filter-name 'ReadPosRankSum-8'"  % (GATK4,args.r,outname1,outname2)
  
     outname3=baseout+"_raw_INDEL.vcf.gz"
     outname4=baseout+"_filtered_INDEL.vcf.gz"
     cmd3 = '%s SelectVariants -R %s -V %s -select-type INDEL -O %s' % (GATK4,args.r,args.input,outname3)
-    cmd4 = "%s VariantFiltration -R %s -V %s -O %s --filter-expression 'QD < 2.0 || FS > 200.0 || ReadPosRankSum < -20.0 || InbreedingCoeff < -0.8 || SOR > 10.0' --filter-name 'LMS_INDEL_filter1'" % (GATK4,args.r,outname3,outname4)
+    cmd4 = "%s VariantFiltration -R %s -V %s -O %s -filter 'QD < 2.0' --filter-name 'QD2' -filter 'QUAL < 30.0' --filter-name 'QUAL30' -filter 'FS > 200.0' --filter-name 'FS200' -filter 'ReadPosRankSum < -20.0' --filter-name 'ReadPosRankSum-20'" % (GATK4,args.r,outname3,outname4)
  
     filename1='%s/final_vcf/filtering_SNP.sh' %(basepath)
     script=open(filename1, 'w')

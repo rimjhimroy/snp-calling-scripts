@@ -58,18 +58,18 @@ picard-tools BuildBamIndex INPUT=${BAMNAME}.bam
 GATK4="java -Xmx25g -Djava.oi.tmpdir=`pwd`/tmp -jar /software/UHTS/Analysis/GenomeAnalysisTK/4.1.3.0/bin/GenomeAnalysisTK.jar "
 
 #Part 1: generate a first list of raw SNPs and INDELs (${BAMNAME}_raw_variants_1.vcf) from the .bam file with GATK [HaplotypeCaller]
-call="$GATK4 HaplotypeCaller -R ${REFNAME}.fa -I ${BAMNAME}.bam -O ${BAMNAME}_raw_variants_1.vcf.gz -ploidy ${PLOIDY} --native-pair-hmm-threads ${SLURM_CPUS_PER_TASK} -ERC GVCF"
+call="$GATK4 HaplotypeCaller -R ${REFNAME}.fa -I ${BAMNAME}.bam -O ${BAMNAME}_raw_variants_1.vcf.gz -ploidy ${PLOIDY} --native-pair-hmm-threads ${SLURM_CPUS_PER_TASK}"
 printf "\n\nStep1:: ${call}\n\n" 
 eval $call
 
 
 #Part 2: separate raw SNPs and INDELs in two separated vcf files since filtration parameters will be different for each (see further)
 call2="$GATK4 SelectVariants -R ${REFNAME}.fa -V ${BAMNAME}_raw_variants_1.vcf.gz -select-type SNP -O ${BAMNAME}_raw_SNPs_1.vcf.gz"
-printf "Step2:: ${call2}\n\n"
+printf "\n\nStep2:: ${call2}\n\n"
 eval $call2
 
 call3="$GATK4 SelectVariants -R ${REFNAME}.fa -V ${BAMNAME}_raw_variants_1.vcf.gz -select-type INDEL -O ${BAMNAME}_raw_INDELs_1.vcf.gz"
-printf "Step3:: ${call3}\n\n"
+printf "\n\nStep3:: ${call3}\n\n"
 eval $call3
 
 
@@ -77,36 +77,46 @@ eval $call3
 #SNPs and INDELs matching any of the specified criteria will be considered bad and marked FILTER
 #for _raw_SNPs_1
 call4="$GATK4 VariantFiltration -R ${REFNAME}.fa -V ${BAMNAME}_raw_SNPs_1.vcf.gz -O ${BAMNAME}_raw_SNPs_2.vcf.gz -filter 'QD < 2.0' --filter-name 'QD2' -filter 'QUAL < 30.0' --filter-name 'QUAL30' -filter 'SOR > 3.0' --filter-name 'SOR3' -filter 'FS > 60.0' --filter-name 'FS60' -filter 'MQ < 40.0' --filter-name 'MQ40' -filter 'MQRankSum < -12.5' --filter-name 'MQRankSum-12.5' -filter 'ReadPosRankSum < -8.0' --filter-name 'ReadPosRankSum-8'"
-printf "Step4:: ${call4}\n\n"
+printf "\n\nStep4:: ${call4}\n\n"
 eval $call4
 
 #for _raw_ INDELs_1
 call5="$GATK4 VariantFiltration -R ${REFNAME}.fa -V ${BAMNAME}_raw_INDELs_1.vcf.gz -O ${BAMNAME}_raw_INDELs_2.vcf.gz -filter 'QD < 2.0' --filter-name 'QD2' -filter 'QUAL < 30.0' --filter-name 'QUAL30' -filter 'FS > 200.0' --filter-name 'FS200' -filter 'ReadPosRankSum < -20.0' --filter-name 'ReadPosRankSum-20'"
-printf "Step5:: ${call5}\n\n"
+printf "\n\nStep5:: ${call5}\n\n"
 eval $call5
+
+#exclude filtered
+call5_1="$GATK4 SelectVariants --exclude-filtered -R ${REFNAME}.fa -V ${BAMNAME}_raw_SNPs_2.vcf.gz -O ${BAMNAME}_filtered_SNPs_2.vcf.gz"
+printf "\n\nStep5_1:: ${call5_1}\n\n"
+eval $call5_1
+
+call5_2="$GATK4 SelectVariants --exclude-filtered -R ${REFNAME}.fa -V ${BAMNAME}_raw_INDELs_2.vcf.gz -O ${BAMNAME}_filtered_INDELs_2.vcf.gz"
+printf "\n\nStep5_2:: ${call5_2}\n\n"
+eval $call5_2
+
 
 #Part 4: recalibration of base quality score with filtered {BAMNAME}_raw_SNPs_2.vcf and {BAMNAME}_raw_INDELs_2.vcf
 
 
 #iteration 1
 #use {BAMNAME}_raw_SNPs_2.vcf and {BAMNAME}_raw_INDELs_2.vcf to generate a first model of recalibration (tables;_recal_model_1.grp) that will be used for base quality score recalibration
-call6="$GATK4 BaseRecalibrator -R ${REFNAME}.fa -I ${BAMNAME}.bam --known-sites ${BAMNAME}_raw_SNPs_2.vcf.gz --known-sites ${BAMNAME}_raw_INDELs_2.vcf.gz -O ${BAMNAME}_recal_model_1.grp"
-printf "Step6:: ${call6}\n\n"
+call6="$GATK4 BaseRecalibrator -R ${REFNAME}.fa -I ${BAMNAME}.bam --known-sites ${BAMNAME}_filtered_SNPs_2.vcf.gz --known-sites ${BAMNAME}_filtered_INDELs_2.vcf.gz -O ${BAMNAME}_recal_model_1.grp"
+printf "\n\nStep6:: ${call6}\n\n"
 eval $call6
 
 #recalibrate the original bam file (GATK4 does not allow the recalibration on-the-fly like GATK3)
-call7="$GATK4 ApplyBQSR -R ${REFNAME}.fa -I ${BAMNAME}.bam --bqsr-recal-file ${BAMNAME}_recal_model_1.grp -O ${BAMNAME}_recal_1.bam"
-printf "Step7:: ${call7}\n\n"
+call7="$GATK4 ApplyBQSR -R ${REFNAME}.fa -I ${BAMNAME}.bam --bqsr-recal-file ${BAMNAME}_recal_model_1.grp -O ${BAMNAME}_recal_1.bam --emit-original-quals"
+printf "\n\nStep7:: ${call7}\n\n"
 eval $call7
 
-#use the recal_1.bam to built de second model
-call8="$GATK4 BaseRecalibrator -R ${REFNAME}.fa -I ${BAMNAME}_recal_1.bam --known-sites ${BAMNAME}_raw_SNPs_2.vcf.gz --known-sites ${BAMNAME}_raw_INDELs_2.vcf.gz -O ${BAMNAME}_recal_model_2.grp"
-printf "Step8:: ${call8}\n\n"
+#use the recal_model_1.grp to built the second model
+call8="$GATK4 BaseRecalibrator -R ${REFNAME}.fa -I ${BAMNAME}_recal_1.bam --known-sites ${BAMNAME}_filtered_SNPs_2.vcf.gz --known-sites ${BAMNAME}_filtered_INDELs_2.vcf.gz -O ${BAMNAME}_recal_model_2.grp"
+printf "\n\nStep8:: ${call8}\n\n"
 eval $call8
 
 #plots the two models of recalibration to see whether convergence is observed or not
 call9="$GATK4 AnalyzeCovariates -before ${BAMNAME}_recal_model_1.grp -after ${BAMNAME}_recal_model_2.grp -plots ${BAMNAME}_recalibration_1_2.pdf"
-printf "Step9:: ${call9}\n\n"
+printf "\n\nStep9:: ${call9}\n\n"
 eval $call9
 
 
@@ -115,7 +125,7 @@ eval $call9
 #this generates a ${BAMNAME}_final_variants.g.vcf file that contains both SNPs and INDELs
 #runs HC with the -ERC GVCF mode to add relevant informations for downstream genotypingt
 call10="$GATK4 HaplotypeCaller -R ${REFNAME}.fa -I ${BAMNAME}_recal_1.bam -O ${BAMNAME}_final_variants.g.vcf.gz -ploidy ${PLOIDY} --pcr-indel-model NONE --native-pair-hmm-threads ${SLURM_CPUS_PER_TASK} -ERC GVCF"
-printf "Step10:: ${call10}\n\n"
+printf "\n\nStep10:: ${call10}\n\n"
 eval $call10
 
 dur=$(echo "$(date +%s.%N) - $start" | bc)

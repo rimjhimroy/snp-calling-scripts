@@ -35,8 +35,7 @@ if __name__ == '__main__':
     basedir=args.infolder.rsplit('/', 1)[0]
     mk_dir(basedir+"/BQSR")
     mk_dir(basedir+"/BQSRlog")
-    logoutput='%s/BQSRlog/BQSR-%%N-%%j.log' %(basedir)
-    logerror='%s/BQSRlog/BQSR-%%N-%%j.log' %(basedir)
+    
     bam=[f for f in os.listdir(args.infolder) if f.endswith('.bam')]
     map_values=ploidymap(args.ploidy)
     pdict=map_values.map
@@ -45,6 +44,8 @@ if __name__ == '__main__':
     for i in bam:
         sam=i.rsplit('.', 1)[0]
         ploidy=pdict[sam]
+        logoutput='%s/BQSRlog/BQSR_%s-%%N-%%j.log' %(basedir,sam)
+        logerror='%s/BQSRlog/BQSR_%s-%%N-%%j.log' %(basedir,sam)
         sample=basedir+"/mergedbam/"+i
         cmd='sbatch -p all -J %s --output=%s --error=%s %s/variant_calling.sh %s %s %s %s' %(sam,logoutput,logerror,args.script,args.ref,sample,basedir,ploidy)
         print(cmd)

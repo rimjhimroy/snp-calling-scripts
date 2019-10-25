@@ -17,7 +17,7 @@ def mk_dir(path):
 if __name__ == '__main__':
     # create variables that can be entered as arguments in command line
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--input', dest='infolder', help="full path of the folder with vcf files per sample [required]", required=True)
+    parser.add_argument('-i', '--input', dest='infolder', help="full path of the folder with vcf files per sample of BQSR [required]", required=True)
     parser.add_argument('-r', '--ref', dest='ref', help="full path to the reference file [required]", required=True)
     parser.add_argument('-sc', '--scaff', dest='scaff', help="full path to the scaffold list to operate on [required]", required=True)
     parser.add_argument('-g', '--group', dest='group', help="genotyping group [required]", required=True)
@@ -44,20 +44,38 @@ if __name__ == '__main__':
             continue
     
     scriptpath=args.script
-    vcf=[f for f in os.listdir(args.infolder) if f.endswith('_final_variants.g.vcf')]
+    basepath=args.infolder.rsplit('/', 1)[0]
+    outfolder=basepath+"/joint_genotyping"
+    mk_dir(outfolder)
+    lncmd='ln -s %s %s/.' %(basepath+"/BQSR/*/*_final_variants.g.vcf.gz",outfolder+"/.")
+    lnp = subprocess.Popen(lncmd, shell=True)
+    lnsts = os.waitpid(lnp.pid, 0)[1]
+    vcf=[f for f in os.listdir(outfolder) if f.endswith('_final_variants.g.vcf.gz')]
     outname=set([i.split("_final_variants.g.vcf", 1)[0] for i in vcf])
     print(outname)
     GATK4="java -Xmx46g -Xms46g -Djava.oi.tmpdir=`pwd`/tmp -jar /software/UHTS/Analysis/GenomeAnalysisTK/4.1.3.0/bin/GenomeAnalysisTK.jar "
     
-    vcflist=["-V "+f+"_final_variants.g.vcf" for f in outname]
+    loadmod="source %s" % basepath+"/modules.sh"
+    vcflist=["-V "+outfolder+"/"+f+"_final_variants.g.vcf" for f in outname]
     tomerge=' '.join(map(str, vcflist))
+    mk_dir(outfolder+"/scripts")
     with open(args.scaff) as fi:
         scaffs = fi.read().splitlines()
     for i in scaffs:
         scaff_name=i
-        scaff_name=scaff_name.replace("|", "\|")
-        command="%s GenotypeGVCFs -R %s -V gendb://%s_%s_db -O %s_%s.vcf.gz" % (GATK4,args.ref,args.group,i,args.group,i)
-        cmd='sbatch -c 8 -p all --mem=48G --wrap "%s"' % command
+        scaff_name=scaff_name.replace("|", "_")
+        scaff_name=scaff_name.replace(".", "_")
+        command1="%s GenomicsDBImport %s --reader-threads 8 --genomicsdb-workspace-path %s_%sdb -L %s" % (GATK4,tomerge,args.group,scaff_name,i)
+        command2="%s GenotypeGVCFs --include-non-variant-sites -R %s -V gendb://%s_%sdb -O %s_%s.vcf.gz" % (GATK4,args.ref,args.group,scaff_name,args.group,scaff_name)
+
+        filename='%s/joint_genotyping/scripts/joint_genotyping_%s.sh' %(basepath,scaff_name)
+        script=open(filename, 'w')
+        script.write('#!/bin/bash'+'\n')
+        script.write(loadmod+'\n')
+        script.write(command1+'\n')
+        script.write(command2+'\n')
+        script.close()
+        
+        cmd = ('sbatch -p empi --mem=48G --time=5:00:00 '+filename)
         p = subprocess.Popen(cmd, shell=True)
         sts = os.waitpid(p.pid, 0)[1]
-        print(cmd)
