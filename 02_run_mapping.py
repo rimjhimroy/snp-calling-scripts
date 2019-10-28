@@ -25,7 +25,6 @@ parser.add_argument('-k', '--seed', dest='seed', help="minimum seed length [defa
 parser.add_argument('-s', '--no_scratch', dest='s', action='store_false', default=False, help="don't use local scratch. CURRENTLY CANNOT USE SCRATCH [default DON'T use local scratch]")
 parser.add_argument('-v', '--version', dest='version', help="bwa version to use [default 0.7.17]", default="0.7.17")
 parser.add_argument('--samtools', dest='samtools', help="samtools version [default 1.8]", default='1.8')
-parser.add_argument('--print', type=str, dest='prt', default='false', help='If changed to true then shell files are printed to screen and not launched [false]')
 
 
 args = parser.parse_args()

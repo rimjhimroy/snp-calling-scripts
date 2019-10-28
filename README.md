@@ -42,5 +42,31 @@ sbatch 01_read_trimming.sh setup/01_read_trimming.sh
 02_run_mapping.py -r [PATH/TO/REFERENCE] -i [PATH/TO/TRIMMED/FASTQ/FILES] -o [PATH/TO/OUTPUT/FOLDERS] -p [PATH/TO/THE/SCRIPTS/FOLDER]
 ```
 
-## 03 BQSR and variant calling
-if you have reference with 
+```bash
+usage: 02_run_mapping.py [-h] -r R -i INFOLDER -o OUTPUT -p SCRIPT
+                         [-N THREADS] [--mem MEM] [--time TIME] [-k SEED] [-s]
+                         [-v VERSION] [--samtools SAMTOOLS] [--print PRT]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -r R, --reference R   full path of the ref genome index files [required]
+  -i INFOLDER, --input INFOLDER
+                        full path of the folder with input *.trim.fastq.gz
+                        files [required]
+  -o OUTPUT, --output OUTPUT
+                        full path of output folder [required]
+  -p SCRIPT, --script SCRIPT
+                        full path of scripts folder [required]
+  -N THREADS, --threads THREADS
+                        number of threads [default 4]
+  --mem MEM             memory [default 16G]
+  --time TIME           maximum run time as hours:minutes:seconds [default
+                        4:0:0]
+  -k SEED, --seed SEED  minimum seed length [default 19]
+  -s, --no_scratch      don\'t use local scratch. CURRENTLY CANNOT USE SCRATCH
+                        [default DON\'T use local scratch]
+  -v VERSION, --version VERSION
+                        bwa version to use [default 0.7.17]
+  --samtools SAMTOOLS   samtools version [default 1.8]
+```
+## 03 Merge different bam files from different libraries for the same sample
