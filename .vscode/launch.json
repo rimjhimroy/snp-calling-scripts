@@ -58,7 +58,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/final_vcf/biscut_ind_allchr.vcf.gz","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta"]
+            "args":["-i", "/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/final/biscut_ind_allchr.vcf.gz","-r","/gpfs/homefs/ips/rchoudhury/Data/biscut_ind/ref/biscutella_baetica.fasta"]
         }
     ]
 }

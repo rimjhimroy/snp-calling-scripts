@@ -4,7 +4,9 @@
 
 You should not merge the different FASTQs from different lanes before aligning them. If you do so, then you will loose "read group" (RG tag) information. I would align each lane separately, then the scripts add specific RG tags to each lane and then merge the aligned bams (respecting RG information). RG information is important for downstream analyses in GATK, such as  BQSR.  
 
-1. Rename [SAMPLENAME]_[LANE]_[PAIR]_[random_string].fastq.gz files by adding the run id to the file name, giving [SAMPLE]_[LANE]_[PAIR]_001.fastq.gz (important if there are several runs from the same library, else ignore). Make sure there is no '_' in SAMPLENAME.  
+To get help about how to run the python scripts launch: `scriptname.py -h`
+
+1. Rename [SAMPLENAME]\_[LANE]\_[PAIR]\_[random_string].fastq.gz files by adding the run id to the file name, giving [SAMPLE]\_[LANE]\_[PAIR]\_001.fastq.gz (important if there are several runs from the same library, else ignore). Make sure there is no '_' in SAMPLENAME.  
 
 ```bash
 cd raw
@@ -18,13 +20,17 @@ while read from to; do    echo "mv ${from} $to"; done < ../names.txt
 
 2. FastQC and multiqc
 
+'setup/run_qc.json' is a setup file that you need to change with the location of your data before running
+
 ```bash
-sbatch doQC.sh json_setup_files/run_qc.json
+sbatch doQC.sh setup/run_qc.json
 ```
 
 ## Steps
 
 ## 01 Read Trimming
+
+'setup/01_read_trimming.sh' is a setup file that you need to change with the location of your data before running
 
 ```bash
 sbatch 01_read_trimming.sh setup/01_read_trimming.sh

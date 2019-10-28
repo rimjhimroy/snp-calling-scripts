@@ -47,16 +47,21 @@ if __name__ == '__main__':
     basepath=args.infolder.rsplit('/', 1)[0]
     outfolder=basepath+"/joint_genotyping"
     mk_dir(outfolder)
+    
     lncmd='ln -s %s %s/.' %(basepath+"/BQSR/*/*_final_variants.g.vcf.gz",outfolder+"/.")
     lnp = subprocess.Popen(lncmd, shell=True)
     lnsts = os.waitpid(lnp.pid, 0)[1]
+    lncmd2='ln -s %s %s/.' %(basepath+"/BQSR/*/*_final_variants.g.vcf.gz.tbi",outfolder+"/.")
+    lnp2 = subprocess.Popen(lncmd2, shell=True)
+    lnsts2 = os.waitpid(lnp2.pid, 0)[1]
+    
     vcf=[f for f in os.listdir(outfolder) if f.endswith('_final_variants.g.vcf.gz')]
     outname=set([i.split("_final_variants.g.vcf", 1)[0] for i in vcf])
     print(outname)
     GATK4="java -Xmx46g -Xms46g -Djava.oi.tmpdir=`pwd`/tmp -jar /software/UHTS/Analysis/GenomeAnalysisTK/4.1.3.0/bin/GenomeAnalysisTK.jar "
     
     loadmod="source %s" % basepath+"/modules.sh"
-    vcflist=["-V "+outfolder+"/"+f+"_final_variants.g.vcf" for f in outname]
+    vcflist=["-V "+f+"_final_variants.g.vcf.gz" for f in outname]
     tomerge=' '.join(map(str, vcflist))
     mk_dir(outfolder+"/scripts")
     with open(args.scaff) as fi:
@@ -65,7 +70,7 @@ if __name__ == '__main__':
         scaff_name=i
         scaff_name=scaff_name.replace("|", "_")
         scaff_name=scaff_name.replace(".", "_")
-        command1="%s GenomicsDBImport %s --reader-threads 8 --genomicsdb-workspace-path %s_%sdb -L %s" % (GATK4,tomerge,args.group,scaff_name,i)
+        command1="%s GenomicsDBImport %s --reader-threads 8 --genomicsdb-workspace-path %s_%sdb -L %s" % (GATK4,tomerge,args.group,scaff_name,i.replace("|", "\|"))
         command2="%s GenotypeGVCFs --include-non-variant-sites -R %s -V gendb://%s_%sdb -O %s_%s.vcf.gz" % (GATK4,args.ref,args.group,scaff_name,args.group,scaff_name)
 
         filename='%s/joint_genotyping/scripts/joint_genotyping_%s.sh' %(basepath,scaff_name)
@@ -76,6 +81,6 @@ if __name__ == '__main__':
         script.write(command2+'\n')
         script.close()
         
-        cmd = ('sbatch -p empi --mem=48G --time=5:00:00 '+filename)
+        cmd = ('sbatch -p all --mem=48G --time=5:00:00 '+filename)
         p = subprocess.Popen(cmd, shell=True)
         sts = os.waitpid(p.pid, 0)[1]
