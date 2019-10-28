@@ -22,9 +22,9 @@ parser.add_argument('-N', '--threads', dest='threads', help="number of threads [
 parser.add_argument('--mem', dest='mem', help="memory [default 16G]", default="16G")
 parser.add_argument('--time', dest='time', help="maximum run time as hours:minutes:seconds [default 4:0:0]", default="24:0:0")
 parser.add_argument('-k', '--seed', dest='seed', help="minimum seed length [default 19]", default=19, type=int)
-parser.add_argument('-s', '--no_scratch', dest='s', action='store_false', default=False, help="don't use local scratch. CURRENTLY CANNOT USE SCRATCH [default DON'T use local scratch]")
 parser.add_argument('-v', '--version', dest='version', help="bwa version to use [default 0.7.17]", default="0.7.17")
 parser.add_argument('--samtools', dest='samtools', help="samtools version [default 1.8]", default='1.8')
+parser.add_argument('--print', type=str, dest='prt', default='false', help='If changed to true then shell files are printed to screen and not launched [false]')
 
 
 args = parser.parse_args()
@@ -49,8 +49,8 @@ for key in d:
     outfileL2=args.output+"/mapout/"+key+"_L2"
     jobnameL1=key+"_L1"
     jobnameL2=key+"_L2"
-    cmdL1='%s/BWA-mem.py -r %s -i %s -m %s --sample %s --library %s -o %s -n %s --print %s' %(scriptpath,args.r,pair1lane1,pair2lane1,d[key],d[key],outfileL1,jobnameL1,args.prt)
-    cmdL2='%s/BWA-mem.py -r %s -i %s -m %s --sample %s --library %s -o %s -n %s --print %s' %(scriptpath,args.r,pair1lane2,pair2lane2,d[key],d[key],outfileL2,jobnameL2,args.prt) 
+    cmdL1='%s/BWA-mem.py -r %s -i %s -m %s --sample %s --library %s -o %s -n %s -N %s --mem %s --time %s -k %s -v %s --samtools %s --print %s' %(scriptpath,args.r,pair1lane1,pair2lane1,d[key],d[key],outfileL1,jobnameL1,args.threads,args.mem,args.time,args.seed,args.version,args.samtools,args.prt)
+    cmdL2='%s/BWA-mem.py -r %s -i %s -m %s --sample %s --library %s -o %s -n %s -N %s --mem %s --time %s -k %s -v %s --samtools %s --print %s' %(scriptpath,args.r,pair1lane2,pair2lane2,d[key],d[key],outfileL2,jobnameL2,args.threads,args.mem,args.time,args.seed,args.version,args.samtools,args.prt) 
     print(cmdL1)
     pL1 = subprocess.Popen(cmdL1, shell=True)
     stsL1 = os.waitpid(pL1.pid, 0)[1]

@@ -10,7 +10,7 @@
             "request": "launch",
             "program": "${file}",
             "console": "integratedTerminal",
-            "args": ["-r", "~/Data/biscut_ind/ref/biscutella_baetica.fasta", "-i", "~/Data/biscut_ind/qc_trim","-o","~/Data/biscut_ind","-p","/home/ubelix/ips/rchoudhury/snp_calling_scripts"]
+            "args": ["-r", "~/Data/biscut_ind/ref/biscutella_baetica.fasta", "-i", "~/Data/biscut_ind/qc_trim","-o","~/Data/biscut_ind","-p","/home/ubelix/ips/rchoudhury/snp_calling_scripts","--print","True"]
         },
         {
             "name": "Python: BWA-mem.py",
