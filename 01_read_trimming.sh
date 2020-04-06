@@ -52,8 +52,8 @@ declare -a sam=(`cat $samples`)
 
 # Calculate the starting and ending values for this task based
 # on the SLURM task and the number of runs per task.
-START_NUM=$(( ($SLURM_ARRAY_TASK_ID - 1) * $PER_TASK + 1 ))
-END_NUM=$(( $SLURM_ARRAY_TASK_ID * $PER_TASK ))
+START_NUM=$(( (($SLURM_ARRAY_TASK_ID-1) * $PER_TASK) +1))
+END_NUM=$(( ($SLURM_ARRAY_TASK_ID) * $PER_TASK ))
  
 # Print the task and run range
 echo This is task $SLURM_ARRAY_TASK_ID, which will do runs $START_NUM to $END_NUM

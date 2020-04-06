@@ -9,18 +9,18 @@ To get help about how to run the python scripts launch: `scriptname.py -h`
 1. Rename [SAMPLENAME]\_[LANE]\_[PAIR]\_[random_string].fastq.gz files by adding the run id to the file name, giving [SAMPLE]\_[LANE]\_[PAIR]\_001.fastq.gz (important if there are several runs from the same library, else ignore). Make sure there is no '_' in SAMPLENAME.  
 
 ```bash
-cd raw
-for i in $( ls *.gz ); do x=$(zcat $i | head -n 1 | awk -F ":" '{print $2}');  sam=$(echo $i | awk -F "_" '{print $1}'); lane=$(echo $i | awk -F "_" '{print $2}');read=$(echo $i | awk -F "_" '{print $3}'); echo -e ${i}'\t'${sam}_${x}_${lane}_${read}_001.fastq.gz; done > ../names.txt  
+cd raw # go to your raw directory
+for i in $( ls *.gz ); do x=$(zcat $i | head -n 1 | awk -F ":" '{print $2}');  sam=$(echo $i | awk -F "_" '{print $1}'); lane=$(echo $i | awk -F "_" '{print $2}');read=$(echo $i | awk -F "_" '{print $3}'); echo -e ${i}'\t'${sam}_${x}_${lane}_${read}_001.fastq.gz; done > ../names.txt  #create a table to rename files
 mkdir ../files
-cd ..
-ln -s raw/* files/.
-cd files
-while read from to; do    echo "mv ${from} $to"; done < ../names.txt
+cd ../files
+ln -s ../raw/* .  #create softlinks to the files
+while read from to; do mv ${from} $to; done < ../names.txt #rename the files
 ```
 
 2. FastQC and multiqc
 
-'setup/run_qc.json' is a setup file that you need to change with the location of your data before running
+'setup/run_qc.json' is a setup file that you need to change with the location of your data before running  
+It will run fastqc on the fastq files and generate quality plots which is useful to spot potential problems in high througput sequencing datasets. It highlight any areas where this library looks unusual (highlighting them in red) and where you should take a closer look.  
 
 ```bash
 sbatch doQC.sh setup/run_qc.json
@@ -30,7 +30,8 @@ sbatch doQC.sh setup/run_qc.json
 
 ## 01 Read Trimming
 
-'setup/01_read_trimming.json' is a setup file that you need to change with the location of your data before running
+'setup/01_read_trimming.json' is a setup file that you need to change with the location of your data before running  
+When data is sequenced on Illumina, adapters are added for the fragments to attach to the beads. If these adapters are not removed they can result in false assembly or other issues. Trimmomatic is used in the script to remove sequence adapters.  
 
 ```bash
 sbatch 01_read_trimming.sh setup/01_read_trimming.json
