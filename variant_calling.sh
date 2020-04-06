@@ -105,7 +105,7 @@ printf "\n\nStep6:: ${call6}\n\n"
 eval $call6
 
 #recalibrate the original bam file (GATK4 does not allow the recalibration on-the-fly like GATK3)
-call7="$GATK4 ApplyBQSR -R ${REFNAME}.fa -I ${BAMNAME}.bam --bqsr-recal-file ${BAMNAME}_recal_model_1.grp -O ${BAMNAME}_recal_1.bam --emit-original-quals"
+call7="$GATK4 ApplyBQSR -R ${REFNAME}.fa -I ${BAMNAME}.bam --bqsr-recal-file ${BAMNAME}_recal_model_1.grp -O ${BAMNAME}_recal_1.bam --emit-original-quals --static-quantized-quals 10 --static-quantized-quals 20 --static-quantized-quals 30 --add-output-sam-program-record --create-output-bam-md5"
 printf "\n\nStep7:: ${call7}\n\n"
 eval $call7
 

@@ -30,10 +30,10 @@ sbatch doQC.sh setup/run_qc.json
 
 ## 01 Read Trimming
 
-'setup/01_read_trimming.sh' is a setup file that you need to change with the location of your data before running
+'setup/01_read_trimming.json' is a setup file that you need to change with the location of your data before running
 
 ```bash
-sbatch 01_read_trimming.sh setup/01_read_trimming.sh
+sbatch 01_read_trimming.sh setup/01_read_trimming.json
 ```
 
 ## 02 Mapping using BWA-mem

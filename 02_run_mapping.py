@@ -40,6 +40,7 @@ for key, value in d.items():
 mk_dir(args.output+"/mapout")
 mk_dir(args.output+"/maplog")
 mk_dir(args.output+"/mapscripts")
+mk_dir(args.output+"/mrkduplog")
 for key in d:
     pair1lane1=args.infolder+"/"+key+"_L1_R1_001.trim.fastq.gz"
     pair2lane1=args.infolder+"/"+key+"_L1_R2_001.trim.fastq.gz"

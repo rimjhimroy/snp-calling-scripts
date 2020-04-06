@@ -179,7 +179,7 @@ else:
         if args.mate2:
                 script.write('%s ' %args.mate2)
 
-script.write('> %s.sam' %args.output +'\n')
+script.write('samtools view -1 - > %s.bam' %args.output +'\n')
 
 
 
@@ -198,7 +198,8 @@ mk_dir(basefolder+"/tmp")
 mk_dir(tmpdir)
 #mk_dir(basefolder+"/mrkduplog")
 metrics=basefolder+"/mrkduplog/"+args.n+"_metrics.txt"
-script.write("picard-tools SortSam INPUT=%s OUTPUT=%s SORT_ORDER=coordinate TMP_DIR=%s" %(args.output+".sam", outbam,tmpdir)+'\n')
+script.write("picard-tools SortSam INPUT=%s OUTPUT=%s SORT_ORDER=coordinate TMP_DIR=%s" %(args.output+".bam", outbam,tmpdir)+'\n')
+script.write("rm  %s" %(args.output+".sam")+'\n')
 script.write("picard-tools MarkDuplicates INPUT=%s OUTPUT=%s METRICS_FILE=%s TMP_DIR=%s" %(outbam, mrkdup,metrics,tmpdir)+'\n')
 
 script.write('/bin/echo Job end time: `date`'+'\n')
